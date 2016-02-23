@@ -1,0 +1,102 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<core:CityModel xmlns:core="http://www.opengis.net/citygml/1.0" xmlns:gen="http://www.opengis.net/citygml/generics/1.0" xmlns:bldg="http://www.opengis.net/citygml/building/1.0" xmlns:gml="http://www.opengis.net/gml" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.opengis.net/citygml/building/1.0 http://schemas.opengis.net/citygml/building/1.0/building.xsd http://www.opengis.net/citygml/1.0 http://schemas.opengis.net/citygml/1.0/cityGMLBase.xsd http://www.opengis.net/citygml/generics/1.0 http://schemas.opengis.net/citygml/generics/1.0/generics.xsd">
+	<core:cityObjectMember>
+		<bldg:Building>
+			<bldg:lod2Solid>
+				<gml:CompositeSolid>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">7.155 -7.675 -3.5175 -7.155 -7.675 -3.5175 -7.155 -7.675 3.5175 7.155 -7.675 3.5175 7.155 -7.675 -3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">-7.155 -7.675 3.5175 -7.155 3.115 3.5175 7.155 3.115 3.5175 7.155 -7.675 3.5175 -7.155 -7.675 3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">7.155 3.115 -3.5175 7.155 7.675 0.0 -7.155 7.675 0.0 -7.155 3.115 -3.5175 7.155 3.115 -3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">7.155 -7.675 -3.5175 7.155 -7.675 3.5175 7.155 3.115 3.5175 7.155 7.675 0.0 7.155 3.115 -3.5175 7.155 -7.675 -3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">7.155 -7.675 -3.5175 7.155 3.115 -3.5175 -7.155 3.115 -3.5175 -7.155 -7.675 -3.5175 7.155 -7.675 -3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">-7.155 3.115 -3.5175 -7.155 7.675 0.0 -7.155 3.115 3.5175 -7.155 -7.675 3.5175 -7.155 -7.675 -3.5175 -7.155 3.115 -3.5175</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+					<gml:solidMember>
+						<gml:Solid>
+							<gml:exterior>
+								<gml:Polygon>
+									<gml:exterior>
+										<gml:LinearRing>
+											<gml:posList srsDimension="3">-7.155 7.675 0.0 7.155 7.675 0.0 7.155 3.115 3.5175 -7.155 3.115 3.5175 -7.155 7.675 0.0</gml:posList>
+										</gml:LinearRing>
+									</gml:exterior>
+								</gml:Polygon>
+							</gml:exterior>
+						</gml:Solid>
+					</gml:solidMember>
+				</gml:CompositeSolid>
+			</bldg:lod2Solid>
+		</bldg:Building>
+	</core:cityObjectMember>
+</core:CityModel>

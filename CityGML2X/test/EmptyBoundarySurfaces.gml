@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CityModel
+		xmlns="http://www.opengis.net/citygml/2.0"
+		xmlns:xAL="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0" 
+		xmlns:gen="http://www.opengis.net/citygml/generics/2.0" 
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+		xmlns:xlink="http://www.w3.org/1999/xlink"
+		xmlns:bldg="http://www.opengis.net/citygml/building/2.0" 
+		xmlns:gml="http://www.opengis.net/gml">
+	<cityObjectMember>
+		<bldg:Building>
+			<bldg:boundedBy>
+				<bldg:GroundSurface/>
+			</bldg:boundedBy>
+			<bldg:boundedBy>
+				<bldg:WallSurface/>
+			</bldg:boundedBy>
+			<bldg:boundedBy>
+				<bldg:RoofSurface/>
+			</bldg:boundedBy>
+		</bldg:Building>
+	</cityObjectMember>
+</CityModel>
