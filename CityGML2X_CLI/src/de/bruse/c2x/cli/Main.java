@@ -38,6 +38,7 @@ import de.bruse.c2x.ValidationException;
 import de.bruse.c2x.converter.citygml.CityGMLSource;
 import de.bruse.c2x.converter.citygml.GeometryType;
 import de.bruse.c2x.converter.citygml.LevelOfDetail;
+import de.bruse.c2x.converter.collada.ColladaWriter;
 import de.bruse.c2x.converter.x3d.X3DWriter;
 
 public class Main {
@@ -45,6 +46,8 @@ public class Main {
 	public static final String INPUT = "input";
 	
 	public static final String OUTPUT = "output";
+	
+	public static final String FORMAT = "format";
 	
 	public static final String LEVEL_OF_DETAIL = "lod";
 	
@@ -54,7 +57,13 @@ public class Main {
 	
 	public static final String VALIDATE = "validate";
 	
+	public static final String X3D = "X3D";
+	
+	public static final String COLLADA = "COLLADA";
+	
 	public static final String X3D_FILE_EXT = ".x3d";
+	
+	public static final String COLLADA_FILE_EXT = ".dae";
 	
 	public static final boolean HAS_ARGS = true;
 	
@@ -89,13 +98,19 @@ public class Main {
 		geometryType.setRequired(Boolean.TRUE);
 		options.addOption(geometryType);
 		
-		Option output = new Option("o", OUTPUT, HAS_ARGS, "File path of the output X3D file.");
+		Option output = new Option("o", OUTPUT, HAS_ARGS, "File path of the output file.");
 		output.setArgs(ONE);
 		output.setArgName(OUTPUT);
 		output.setRequired(Boolean.FALSE);
 		options.addOption(output);
 
-		Option split = new Option("s", SPLIT, NO_ARGS, "Generate one X3D scene node for each building.");
+		Option targetFormat = new Option("f", FORMAT, HAS_ARGS, "Format of the output file. Possible values are X3D and COLLADA.");
+		targetFormat.setArgs(ONE);
+		targetFormat.setArgName(FORMAT);
+		targetFormat.setRequired(Boolean.TRUE);
+		options.addOption(targetFormat);
+		
+		Option split = new Option("s", SPLIT, NO_ARGS, "Generate one scene node for each building (X3D only).");
 		split.setArgName(SPLIT);
 		split.setRequired(Boolean.FALSE);
 		options.addOption(split);
@@ -109,29 +124,41 @@ public class Main {
 			CommandLine line = parser.parse(options, args);
 			if (line.hasOption(INPUT)
 					&& line.hasOption(LEVEL_OF_DETAIL)
-					&& line.hasOption(GEOMETRY_TYPE)) {
+					&& line.hasOption(GEOMETRY_TYPE)
+					&& line.hasOption(FORMAT)) {
 				String inputValue = line.getOptionValue(INPUT);
 				String levelOfDetailValue = line.getOptionValue(LEVEL_OF_DETAIL);
 				String geometryTypeValue = line.getOptionValue(GEOMETRY_TYPE);
-				boolean splitValue = false;
-				if (line.hasOption(SPLIT)) {
-					splitValue = true;
-				}
-				String outputValue = inputValue + X3D_FILE_EXT;
-				if (line.hasOption(OUTPUT)) {
-					outputValue = line.getOptionValue(OUTPUT);
-				}
-				if (line.hasOption(VALIDATE)) {
-					triggerValidation(inputValue);
-				}
+				String targetFormatValue = line.getOptionValue(FORMAT);
+				String outputValue = line.getOptionValue(OUTPUT);
 				LevelOfDetail lod = LevelOfDetail.valueOf(levelOfDetailValue);
 				GeometryType type = GeometryType.valueOf(geometryTypeValue);
-				if (Objects.nonNull(lod) && Objects.nonNull(type)) {
-					triggerConversion(inputValue, lod, type, outputValue, splitValue);								
-				} else {
+				if (Objects.isNull(lod)
+						|| Objects.isNull(type) 
+						|| (!targetFormatValue.equals(X3D) 
+								&& !targetFormatValue.equals(COLLADA))) {
 					printHelp(options);
+				} else {
+					if (line.hasOption(VALIDATE)) {
+						triggerValidation(inputValue);
+					}
+					if (targetFormatValue.equals(X3D)) {
+						boolean splitValue = false;
+						if (line.hasOption(SPLIT)) {
+							splitValue = true;
+						}
+						if (Objects.isNull(outputValue) || outputValue.isEmpty()) {
+							outputValue = inputValue + X3D_FILE_EXT;
+						}
+						triggerX3DConversion(inputValue, lod, type, outputValue, splitValue);
+					} else if (targetFormatValue.equals(COLLADA)) {
+						if (Objects.isNull(outputValue) || outputValue.isEmpty()) {
+							outputValue = inputValue + COLLADA_FILE_EXT;
+						}
+						triggerColladaConversion(inputValue, lod, type, outputValue);
+					}
+					System.out.println("Conversion succeeded.");
 				}
-				System.out.println("Conversion succeeded.");
 			} else {
 				printHelp(options);
 			}
@@ -156,7 +183,7 @@ public class Main {
 		System.out.println("Input file is valid.");
 	}
 	
-	private static void triggerConversion(String input, LevelOfDetail lod, GeometryType geometryType, String output,
+	private static void triggerX3DConversion(String input, LevelOfDetail lod, GeometryType geometryType, String output,
 			boolean split) throws ConversionException, IOException {
 		CityGMLSource citygml = CityGMLSource.fromFile(input);
 		citygml.addGeometryType(geometryType);
@@ -166,9 +193,26 @@ public class Main {
 		Converter converter = new Converter(writer);
 		converter.addSource(citygml);
 		converter.convert();
+		printSummary(citygml);
+	}
+	
+	private static void triggerColladaConversion(String input, LevelOfDetail lod, GeometryType geometryType, String output)
+			throws ConversionException, IOException {
+		CityGMLSource citygml = CityGMLSource.fromFile(input);
+		citygml.addGeometryType(geometryType);
+		citygml.addLevelOfDetail(lod);
+		Path out = Paths.get(output);
+		ColladaWriter writer = new ColladaWriter(out);
+		Converter converter = new Converter(writer);
+		converter.addSource(citygml);
+		converter.convert();
+		printSummary(citygml);
+	}
+	
+	private static void printSummary(CityGMLSource citygml) {
 		System.out.println(citygml.getNumberOfFoundBuildings() + " building(s) found.");
 		System.out.println(citygml.getNumberOfFoundBuildingParts() + " building part(s) found.");
-		System.out.println(citygml.getNumberOfProcessedGeometries() + " geometries(s) processed.");
+		System.out.println(citygml.getNumberOfProcessedGeometries() + " geometries(s) processed.");		
 	}
 
 }
