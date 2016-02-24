@@ -19,6 +19,7 @@
  */
 package de.bruse.c2x.converter.citygml;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import org.citygml4j.model.gml.base.AbstractGML;
@@ -29,12 +30,14 @@ import org.citygml4j.model.gml.geometry.complexes.CompositeSurface;
 import org.citygml4j.model.gml.geometry.primitives.DirectPositionList;
 import org.citygml4j.model.gml.geometry.primitives.LinearRing;
 import org.citygml4j.model.gml.geometry.primitives.Polygon;
+import org.citygml4j.model.gml.geometry.primitives.PosOrPointPropertyOrPointRep;
 import org.citygml4j.model.gml.geometry.primitives.Surface;
 import org.citygml4j.util.walker.GeometryWalker;
 import org.citygml4j.util.xlink.XLinkResolver;
 
 import de.bruse.c2x.Color;
 import de.bruse.c2x.Geometry;
+import de.bruse.c2x.Vertex;
 
 public class PolygonWalker extends GeometryWalker {
 	
@@ -65,6 +68,19 @@ public class PolygonWalker extends GeometryWalker {
 				double z = coords.get(offset + 2);
 				polygon.addVertex(geometry.registerVertex(x, y, z));
 			}
+		} else if (linearRing.isSetPosOrPointPropertyOrPointRep()) {
+			List<PosOrPointPropertyOrPointRep> positionList = linearRing.getPosOrPointPropertyOrPointRep();
+			for (PosOrPointPropertyOrPointRep position : positionList) {
+				List<Double> pos = position.getPos().getValue();
+				double x = pos.get(0);
+				double y = pos.get(1);
+				double z = pos.get(2);
+				polygon.addVertex(geometry.registerVertex(x, y, z));
+			}
+		}
+		LinkedList<Vertex> vertexList = polygon.getVertexList();
+		if (!vertexList.isEmpty() && vertexList.getFirst().equals(polygon.getVertexList().getLast())) {
+			polygon.getVertexList().removeLast();
 		}
 		geometry.addPolygon(polygon);
 	}

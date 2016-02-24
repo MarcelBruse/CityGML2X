@@ -77,5 +77,55 @@ public class ColladaWriterTest {
 					handler.normalsArray);
 		Files.delete(out);
 	}
+	
+	@Test
+	public void processDirectPositions() throws IOException, ConversionException, SAXException {
+		Path in = Paths.get("test/DirectPosition.gml");
+		Path out = Paths.get("test/DirectPosition.gml.dae");
+		CityGMLSource source = new CityGMLSource("", Files.newInputStream(in));
+		source.addLevelOfDetail(LevelOfDetail.LOD2);
+		source.addGeometryType(GeometryType.MULTI_SURFACE);
+		Converter converter = new Converter(new ColladaWriter(out));
+		converter.addSource(source);
+		converter.convert();
+		assertTrue(Files.exists(out));
+		ColladaHandler handler = new ColladaHandler();
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		reader.setContentHandler(handler);
+		reader.parse(out.toString());
+		assertEquals("4.82449999999 4.15049999952 0.0 "
+				+ "-0.2285000000270001 7.32149999961 17.834 "
+				+ "5.16249999998 -5.79449999984 0.0 "
+				+ "-0.2285000000270001 7.32149999961 0.0 "
+				+ "3.61550000001 -7.21250000037 0.0 "
+				+ "4.714499999999999 7.45349999983 12.204 "
+				+ "5.17249999999 -7.16750000045 0.0 "
+				+ "-4.65749999997 -7.45349999983 0.0 "
+				+ "3.61550000001 -7.21250000037 13.988 "
+				+ "-5.17249999999 7.18850000016 0.0 "
+				+ "0.257500000007 -7.3105000006 0.0 "
+				+ "0.257500000007 -7.3105000006 17.834 "
+				+ "5.16249999998 -5.79449999984 12.167 "
+				+ "4.714499999999999 7.45349999983 0.0 "
+				+ "-5.17249999999 7.18850000016 12.204 "
+				+ "4.82449999999 4.15049999952 12.197 "
+				+ "-4.65749999997 -7.45349999983 12.204 "
+				+ "5.17249999999 -7.16750000045 12.204",
+					handler.positionsArray);
+		assertEquals("0.029171617978988634 -0.9995744177921362 0.0 "
+				+ "0.029082301759734818 -0.9995770204063096 0.0 "
+				+ "-0.9993820107390602 -0.0351510541968963 0.0 "
+				+ "-0.02689156570783933 0.9996383564538633 0.0 "
+				+ "-0.026694913821792423 0.9996436272872684 0.0 "
+				+ "0.9994459140272715 0.03328460506287844 0.0 "
+				+ "0.9994229442335921 0.033967315752910926 0.0 "
+				+ "0.9999734776713478 0.007283128027874133 0.0 "
+				+ "0.028889670652944427 -0.9995826063560551 0.0 "
+				+ "-0.524495001342934 0.7292918687908247 -0.43936131336505047 "
+				+ "-0.7508300197034383 -0.026408787062051096 0.6599673154619444 "
+				+ "0.0 0.0 -1.0",
+					handler.normalsArray);
+		Files.delete(out);
+	}
 
 }

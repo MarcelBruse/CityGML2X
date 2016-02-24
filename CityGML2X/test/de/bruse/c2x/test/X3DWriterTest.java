@@ -649,5 +649,56 @@ public class X3DWriterTest {
 		assertEquals(1, handler.numberOfShapeNodes);
 		Files.delete(out);
 	}
+	
+	@Test
+	public void processDirectPositions() throws IOException, ConversionException, SAXException {
+		Path in = Paths.get("test/DirectPosition.gml");
+		CityGMLSource source = new CityGMLSource("", Files.newInputStream(in));
+		source.addLevelOfDetail(LevelOfDetail.LOD2);
+		source.addGeometryType(GeometryType.MULTI_SURFACE);
+		Path out = Paths.get("test/DirectPosition.gml.x3d");
+		Converter converter = new Converter();
+		converter.setWriter(new X3DWriter(out, X3DWriter.WRAP_GEOMETRIES));
+		converter.addSource(source);
+		converter.convert();
+		assertTrue(Files.exists(out));
+		X3DHandler handler = new X3DHandler();
+		XMLReader reader = XMLReaderFactory.createXMLReader();
+		reader.setContentHandler(handler);
+		reader.parse(out.toString());
+		assertTrue(handler.pointSet.contains(
+				"3.61550000001 -7.21250000037 5.071 "
+				+ "0.257500000007 -7.3105000006 8.917 "
+				+ "0.257500000007 -7.3105000006 -8.917 "
+				+ "3.61550000001 -7.21250000037 -8.917 "
+				+ "-4.65749999997 -7.45349999983 3.287 "
+				+ "-4.65749999997 -7.45349999983 -8.917 "
+				+ "-5.17249999999 7.18850000016 3.287 "
+				+ "-5.17249999999 7.18850000016 -8.917 "
+				+ "-0.228500000027 7.32149999961 8.917 "
+				+ "-0.228500000027 7.32149999961 -8.917 "
+				+ "4.7145 7.45349999983 3.287 "
+				+ "4.7145 7.45349999983 -8.917 "
+				+ "4.82449999999 4.15049999952 3.28 "
+				+ "4.82449999999 4.15049999952 -8.917 "
+				+ "5.16249999998 -5.79449999984 3.25 "
+				+ "5.16249999998 -5.79449999984 -8.917 "
+				+ "5.17249999999 -7.16750000045 3.287 "
+				+ "5.17249999999 -7.16750000045 -8.917"));
+		assertTrue(handler.coordIndexSet.contains(
+				"0 1 2 3 -1 "
+				+ "1 4 5 2 -1 "
+				+ "4 6 7 5 -1 "
+				+ "6 8 9 7 -1 "
+				+ "8 10 11 9 -1 "
+				+ "10 12 13 11 -1 "
+				+ "12 14 15 13 -1 "
+				+ "14 16 17 15 -1 "
+				+ "16 0 3 17 -1 "
+				+ "1 0 16 14 12 10 8 -1 "
+				+ "8 6 4 1 -1 "
+				+ "3 2 5 7 9 11 13 15 17 -1"));
+		Files.delete(out);
+	}
 
 }
