@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="dist" name="Build the library">
+	<property name="version" value="0.1-rc1" />
+	<property name="src" location="src" />
+	<property name="res" location="res" />
+	<property name="lib" location="lib" />
+	<property name="test" location="test" />
+	<property name="bin" location="bin" />
+	<property name="destination" location="dist" />
+	<path id="classpath">
+		<fileset dir="${lib}">
+			<include name="*.jar" />
+		</fileset>
+	</path>
+	<target name="clean">
+		<delete dir="${destination}" />
+	</target>
+	<target name="compile" depends="clean">
+		<javac includeantruntime="false" 
+			source="1.8" 
+			target="1.8" 
+			srcdir="${src}" 
+			destdir="${bin}"
+			classpathref="classpath" 
+			encoding="UTF-8" />
+	</target>
+	<target name="dist" depends="compile">
+		<mkdir dir="${destination}/build" />
+		<jar destfile="${destination}/build/citygml2x-${version}.jar">
+			<fileset dir="${bin}" />
+		</jar>
+		<copy todir="${destination}/src">
+			<fileset dir="${src}" />
+		</copy>
+		<copy todir="${destination}/lib">
+			<fileset dir="${lib}" />
+		</copy>
+		<copy todir="${destination}/res">
+			<fileset dir="${res}" />
+		</copy>
+		<copy todir="${destination}/test">
+			<fileset dir="${test}" />
+		</copy>
+		<copy file="LICENSE" todir="${destination}" />
+		<copy file="README.md" todir="${destination}" />
+	</target>
+</project>
