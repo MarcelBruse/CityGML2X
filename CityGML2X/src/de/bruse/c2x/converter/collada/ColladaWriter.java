@@ -24,7 +24,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -56,9 +55,9 @@ public class ColladaWriter implements Writer {
 	
 	private Path outputFilePath;
 	
-	private int vertexCounter = 0;
-	
 	private int geometryCounter = 0;
+	
+	private int vertexCounter = 0;
 	
 	private int normalCounter = 0;
 	
@@ -86,12 +85,12 @@ public class ColladaWriter implements Writer {
 	
 	private HashMap<Color, LinkedList<Polygon>> sortedPolygons = new HashMap<>();
 
-	public ColladaWriter() {
-		this(Paths.get(OUTPUT_FILE_PATH));
-	}
-	
 	public ColladaWriter(Path outputFilePath) {
 		this.outputFilePath = outputFilePath;
+	}
+	
+	public ColladaWriter() {
+		this(Paths.get(OUTPUT_FILE_PATH));
 	}
 	
 	@Override
@@ -170,8 +169,8 @@ public class ColladaWriter implements Writer {
 			effectMap = new HashMap<>();
 			normalIndexMap = new HashMap<>();
 			sortedPolygons = new HashMap<>();
-			vertexCounter = 0;
 			geometryCounter = 0;
+			vertexCounter = 0;
 			materialCounter = 0;
 			normalCounter = 0;
 			writeGeometry(geometry);			
@@ -361,7 +360,7 @@ public class ColladaWriter implements Writer {
 		paramZ.setAttribute("name", "Z");
 		paramZ.setAttribute("type", "float");
 		accessor.appendChild(paramZ);
-				
+
 		String verticesId = geometryId + "_vertices";
 		Element vertices = doc.createElement("vertices");
 		vertices.setAttribute("id", verticesId);
@@ -403,7 +402,7 @@ public class ColladaWriter implements Writer {
 		sortedPolygons.forEach((color, polys) -> {
 			String materialId = effectMap.get(color);
 			
-			Element polylist = doc.createElement("polylist");
+			Element polylist = doc.createElement("polygons");
 			polylist.setAttribute("material", materialId);
 			polylist.setAttribute("count", String.valueOf(polys.size()));
 			mesh.appendChild(polylist);
@@ -420,19 +419,13 @@ public class ColladaWriter implements Writer {
 			inputNormals.setAttribute("offset", "1");
 			polylist.appendChild(inputNormals);
 			
-			polygonList.clear();
-			ArrayList<String> vertexCounts = new ArrayList<>();
 			polys.forEach(polygon -> {
-				vertexCounts.add(String.valueOf(visitPolygon(polygon)));
+				polygonList.clear();
+				visitPolygon(polygon);
+				Element p = doc.createElement("p");
+				p.appendChild(doc.createTextNode(String.join(" ", polygonList)));
+				polylist.appendChild(p);
 			});
-			
-			Element vcount = doc.createElement("vcount");
-			vcount.appendChild(doc.createTextNode(String.join(" ", vertexCounts)));
-			polylist.appendChild(vcount);
-			
-			Element p = doc.createElement("p");
-			p.appendChild(doc.createTextNode(String.join(" ", polygonList)));
-			polylist.appendChild(p);
 			
 			Element instanceMaterial = doc.createElement("instance_material");
 			instanceMaterial.setAttribute("target", "#" + materialId);
@@ -444,9 +437,7 @@ public class ColladaWriter implements Writer {
 	private int visitPolygon(Polygon polygon) {
 		polygon.getVertexList().forEach(vertex -> {
 			polygonList.add(indexMap.get(vertex).toString());
-			// TEST
-			//polygonList.add(normalIndexMap.get(polygon).toString());
-			// TEST
+			polygonList.add(normalIndexMap.get(polygon).toString());
 		});
 		return polygon.getVertexList().size();
 	}
