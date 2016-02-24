@@ -3,7 +3,7 @@
 A Java library for converting CityGML to X3D and Collada
 
 Features:
-* Reads CityGML v1.0 and v2.0
+* Reads CityGML v2.0
 * Writes X3D v3.3
 * Validates CityGML input streams
 * Converts solid geometries
