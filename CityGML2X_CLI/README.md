@@ -3,8 +3,8 @@
 A command line interface for the CityGML2X library
 
 ```
-usage: java -jar c2x -f <format> -i <input> -l <lod> [-o <output>] [-s] -t
-       <geomtype> [-v]
+usage: java -jar c2x.jar -f <format> -i <input> -l <lod> [-o <output>]
+       [-s] -t <geomtype> [-v]
  -f,--format <format>       Format of the output file. Possible values are
                             X3D and COLLADA.
  -i,--input <input>         CityGML file to be converted.
