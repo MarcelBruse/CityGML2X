@@ -73,7 +73,7 @@ public class Main {
 
 	public static void printHelp(Options options) {
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp("java -jar c2x", options, true);
+		formatter.printHelp("java -jar c2x.jar", options, true);
 	}
 
 	public static void main(String[] args) {
