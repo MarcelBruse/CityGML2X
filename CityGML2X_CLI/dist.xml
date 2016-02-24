@@ -53,9 +53,10 @@
 			<fileset dir="${base}/res" />
 		</copy>
 		<copy todir="${destination}/test">
-			<fileset dir="${base}/res" />
+			<fileset dir="${base}/test" />
 		</copy>
-		<copy file="LICENSE" todir="${destination}" />
+		<copy file="LICENSE" tofile="${destination}/LICENSE.CityGML2X_CLI" />
+		<copy file="${base}/LICENSE" tofile="${destination}/LICENSE.CityGML2X" />
 		<copy file="README.md" todir="${destination}" />
 	</target>
 </project>
