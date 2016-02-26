@@ -19,6 +19,7 @@
  */
 package de.bruse.c2x.test;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import org.xml.sax.Attributes;
@@ -28,9 +29,9 @@ import org.xml.sax.SAXException;
 
 public class ColladaHandler implements ContentHandler {
 	
-	public String positionsArray = "";
+	public ArrayList<String> positionsArray = new ArrayList<>();
 	
-	public String normalsArray = "";
+	public ArrayList<String> normalsArray = new ArrayList<>();
 	
 	private boolean readPositionsArray = false;
 	
@@ -56,12 +57,10 @@ public class ColladaHandler implements ContentHandler {
 		if ("float_array".equals(qName)) {
 			String id = atts.getValue("id");
 			if (Objects.nonNull(id)) {
-				switch (id) {
-				case "FaceSet_0_positions_array":
-					readPositionsArray = true;
-					break;
-				case "FaceSet_0_normals_array":
-					readNormalsArray = true;
+				if (id.contains("positions")) {
+					readPositionsArray = true;					
+				} else if (id.contains("normals")) {
+					readNormalsArray = true;					
 				}
 			}
 		}
@@ -78,9 +77,9 @@ public class ColladaHandler implements ContentHandler {
 	@Override
 	public void characters(char[] ch, int start, int length) throws SAXException {
 		if (readPositionsArray) {
-			positionsArray = String.copyValueOf(ch, start, length);
+			positionsArray.add(String.copyValueOf(ch, start, length));
 		} else if (readNormalsArray) {
-			normalsArray = String.copyValueOf(ch, start, length);
+			normalsArray.add(String.copyValueOf(ch, start, length));
 		}
 	}
 

@@ -60,8 +60,8 @@ public class ColladaWriter implements Writer {
 	private int vertexCounter = 0;
 	
 	private int normalCounter = 0;
-	
-	private int materialCounter = 0;
+
+	private int materialFxCounter = 0;
 	
 	private Document doc;
 	
@@ -98,14 +98,13 @@ public class ColladaWriter implements Writer {
 		if (geometryList.isEmpty()) {
 			throw new ConversionException("Found no geometries to write.");
 		}
-		for (Geometry g : geometryList) {		
-			double minX = Double.MAX_VALUE;
-			double maxX = Double.MIN_VALUE;
-			double minY = Double.MAX_VALUE;
-			double maxY = Double.MIN_VALUE;
-			double minZ = Double.MAX_VALUE;
-			double maxZ = Double.MIN_VALUE;
-			
+		double minX = Double.MAX_VALUE;
+		double maxX = Double.MIN_VALUE;
+		double minY = Double.MAX_VALUE;
+		double maxY = Double.MIN_VALUE;
+		double minZ = Double.MAX_VALUE;
+		double maxZ = Double.MIN_VALUE;
+		for (Geometry g : geometryList) {
 			for (Vertex v : g.getVertexList()) {
 				if (v.x < minX) {
 					minX = v.x;
@@ -126,15 +125,17 @@ public class ColladaWriter implements Writer {
 					maxZ = v.z;
 				}
 			}
-			
-			double offsetX = (maxX - minX) / 2;
-			double offsetY = (maxY - minY) / 2;
+		}
+		double offsetX = (maxX - minX) / 2;
+		double offsetY = (maxY - minY) / 2;
+		for (Geometry g : geometryList) {
 			for (Vertex v : g.getVertexList()) {
 				v.x = v.x - minX - offsetX;
 				v.y = v.y - minY - offsetY;
 				v.z = v.z - minZ;
-			}
-			
+			}			
+		}
+		for (Geometry g : geometryList) {
 			for (Polygon p : g.getPolygonList()) {
 				if (p.getVertexList().size() > 2) {
 					Vertex a = p.getVertexList().get(0);
@@ -162,22 +163,6 @@ public class ColladaWriter implements Writer {
 				}
 			}
 		}
-		
-		for (Geometry geometry : geometryList) {
-			polygonList = new LinkedList<>();
-			indexMap = new HashMap<>();
-			effectMap = new HashMap<>();
-			normalIndexMap = new HashMap<>();
-			sortedPolygons = new HashMap<>();
-			geometryCounter = 0;
-			vertexCounter = 0;
-			materialCounter = 0;
-			normalCounter = 0;
-			writeGeometry(geometry);			
-		}
-	}
-
-	private void writeGeometry(Geometry geometry) throws ConversionException {
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		DocumentBuilder builder;
 		try {
@@ -235,9 +220,17 @@ public class ColladaWriter implements Writer {
 		libraryVisualScenes.appendChild(visualScene);
 		
 		libraryGeometries = doc.createElement("library_geometries");
-		createGeometryElement(geometry);
 		root.appendChild(libraryGeometries);
 		
+		for (Geometry geometry : geometryList) {
+			polygonList = new LinkedList<>();
+			indexMap = new HashMap<>();
+			normalIndexMap = new HashMap<>();
+			sortedPolygons = new HashMap<>();
+			vertexCounter = 0;
+			normalCounter = 0;
+			writeGeometry(geometry);			
+		}
 		Element scene = doc.createElement("scene");
 		root.appendChild(scene);
 		
@@ -246,7 +239,6 @@ public class ColladaWriter implements Writer {
 		scene.appendChild(instanceVisualScene);
 		
 		createEffectLibrary();
-		
 		try {
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
 			Transformer transformer = transformerFactory.newTransformer();
@@ -260,9 +252,13 @@ public class ColladaWriter implements Writer {
 			throw new ConversionException("Unable to write the output file.");
 		}
 	}
+
+	private void writeGeometry(Geometry geometry) throws ConversionException {
+		createGeometryElement(geometry);
+	}
 	
 	private void createGeometryElement(Geometry geometry) {
-		String geometryId = "FaceSet_" + geometryCounter;
+		String geometryId = "FaceSet_" + geometryCounter++;
 		
 		Element geo = doc.createElement("geometry");
 		geo.setAttribute("id", geometryId);
@@ -393,7 +389,7 @@ public class ColladaWriter implements Writer {
 				polys = sortedPolygons.get(polygon.getColor());
 			}
 			if (!effectMap.containsKey(polygon.getColor())) {
-				effectMap.put(polygon.getColor(), "Material_" + materialCounter++);			
+				effectMap.put(polygon.getColor(), "Material_" + materialFxCounter++);
 			}
 			polys.add(polygon);
 			sortedPolygons.put(polygon.getColor(), polys);
@@ -443,9 +439,9 @@ public class ColladaWriter implements Writer {
 	}
 	
 	private void createEffectLibrary() {
-		effectMap.forEach((color, materialId) -> {
+		effectMap.forEach((color, materialFxId) -> {
 			Element effect = doc.createElement("effect");
-			effect.setAttribute("id", materialId + "_fx");
+			effect.setAttribute("id", materialFxId + "_fx");
 			libraryEffects.appendChild(effect);
 			
 			Element profileCommon = doc.createElement("profile_COMMON");
@@ -480,11 +476,11 @@ public class ColladaWriter implements Writer {
 			shininess.appendChild(shininessFloat);
 			
 			Element material = doc.createElement("material");
-			material.setAttribute("id", materialId);
+			material.setAttribute("id", materialFxId);
 			libraryMaterials.appendChild(material);
 			
 			Element instanceEffect = doc.createElement("instance_effect");
-			instanceEffect.setAttribute("url", "#" + materialId + "_fx");
+			instanceEffect.setAttribute("url", "#" + materialFxId + "_fx");
 			material.appendChild(instanceEffect);
 		});
 		
