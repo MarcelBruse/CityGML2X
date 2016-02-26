@@ -212,7 +212,7 @@ public class Main {
 	private static void printSummary(CityGMLSource citygml) {
 		System.out.println(citygml.getNumberOfFoundBuildings() + " building(s) found.");
 		System.out.println(citygml.getNumberOfFoundBuildingParts() + " building part(s) found.");
-		System.out.println(citygml.getNumberOfProcessedGeometries() + " geometries(s) processed.");		
+		System.out.println(citygml.getNumberOfProcessedGeometries() + " geometry(s) processed.");		
 	}
 
 }
