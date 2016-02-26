@@ -1,6 +1,6 @@
-# CityGML2X
+# CityGML2X Command Line Interface (C2X)
 
-A command line interface for the CityGML2X library
+A command line interface for the CityGML2X converter library. C2X lets you convert your CityGML models to X3D and Collada.
 
 ```
 usage: java -jar c2x.jar -f <format> -i <input> -l <lod> [-o <output>]
